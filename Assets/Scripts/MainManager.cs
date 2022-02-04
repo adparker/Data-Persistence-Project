@@ -11,17 +11,27 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text HighScoreText;
     public GameObject GameOverText;
     
-    private bool m_Started = false;
-    private int m_Points;
+    private bool _mStarted = false;
+    private int _mPoints;
     
-    private bool m_GameOver = false;
+    private bool _mGameOver = false;
 
-    
+    private string _playerName;
+
+    private int _highScore;
+
+    private string _highScoreName;
     // Start is called before the first frame update
     void Start()
     {
+        GetPlayerName();
+        _highScore = StartManager.Instance.highScore;
+        _highScoreName = StartManager.Instance.highScorePlayerName;
+        UpdateHighScoreText();
+        AddPoint(0);
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -38,13 +48,22 @@ public class MainManager : MonoBehaviour
         }
     }
 
+    void GetPlayerName()
+    {
+        _playerName = StartManager.Instance.playerName;
+    }
+    void UpdateHighScoreText()
+    {
+        HighScoreText.text = $"Best Score by {_highScoreName} at {_highScore}";
+    }
+    
     private void Update()
     {
-        if (!m_Started)
+        if (!_mStarted)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                m_Started = true;
+                _mStarted = true;
                 float randomDirection = Random.Range(-1.0f, 1.0f);
                 Vector3 forceDir = new Vector3(randomDirection, 1, 0);
                 forceDir.Normalize();
@@ -53,7 +72,7 @@ public class MainManager : MonoBehaviour
                 Ball.AddForce(forceDir * 2.0f, ForceMode.VelocityChange);
             }
         }
-        else if (m_GameOver)
+        else if (_mGameOver)
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
@@ -64,13 +83,20 @@ public class MainManager : MonoBehaviour
 
     void AddPoint(int point)
     {
-        m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        _mPoints += point;
+        ScoreText.text = $"{_playerName}'s score : {_mPoints}";
+        if (_mPoints > _highScore)
+        {
+            _highScore = _mPoints;
+            _highScoreName = _playerName;
+            UpdateHighScoreText();
+        }
     }
 
     public void GameOver()
     {
-        m_GameOver = true;
+        _mGameOver = true;
+        StartManager.Save(_highScore, _highScoreName);
         GameOverText.SetActive(true);
     }
 }
