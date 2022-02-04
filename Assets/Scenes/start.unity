@@ -340,8 +340,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   highScore: 0
+  highScorePlayerName: 
   playerName: 
-  playerNameInputUI: {fileID: 0}
+  playerNameInputUI: {fileID: 1198007023}
+  highScoreTextUI: {fileID: 1569955457}
 --- !u!4 &362991965
 Transform:
   m_ObjectHideFlags: 0
