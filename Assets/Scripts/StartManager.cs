@@ -99,6 +99,7 @@ public class StartManager : MonoBehaviour
     public void Load()
     {
         string path = Application.persistentDataPath + "/savefile.json";
+        Debug.Log($"Loading data from: {path}.");
         if (File.Exists(path))
         {
             string json = File.ReadAllText(path);
